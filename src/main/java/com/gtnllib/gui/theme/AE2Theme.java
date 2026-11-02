@@ -13,6 +13,7 @@ import com.cleanroommc.modularui.api.ITheme;
 import com.cleanroommc.modularui.api.IThemeApi;
 import com.cleanroommc.modularui.api.drawable.IDrawable;
 import com.cleanroommc.modularui.api.widget.IWidget;
+import com.cleanroommc.modularui.drawable.GuiDraw;
 import com.cleanroommc.modularui.drawable.GuiTextures;
 import com.cleanroommc.modularui.drawable.Rectangle;
 import com.cleanroommc.modularui.drawable.UITexture;
@@ -54,10 +55,15 @@ public class AE2Theme {
         ICON_BUTTON_HEIGHT = 20, TAB_BUTTON_SIZE = 20, SWITCH_WIDTH = 22, SWITCH_HEIGHT = 12, SWITCH_LABEL_X = 26,
         SWITCH_LABEL_Y = 4, SCROLLBAR_WIDTH = 7, INSET_TOP = 3, INSET_EDGE = 1;
     private static final String ROOT = "textures/gui/skin/";
+    private static final ResourceLocation AE2_LEGACY_STATES = new ResourceLocation(
+        "appliedenergistics2",
+        "textures/guis/states.png"),
+        AE2_LEGACY_TERMINAL = new ResourceLocation("appliedenergistics2", "textures/guis/terminal.png");
     private static final int PANEL_SIZE = 256, INSET_WIDTH = 8, INSET_HEIGHT = 9, SLOT_SIZE = 18, SCROLLER_HEIGHT = 15,
         FIELD_WIDTH = 128, SHEET = 256, SWITCH_SHEET = 64, TAB_HOVER_SIZE = 22, LABEL_PADDING = 2, LABEL_HEIGHT = 8,
         TRACK_WIDTH = 8, TRACK_HEIGHT = 6, FILL_SIZE = 4, TAG_WIDTH = 6, TAG_HEIGHT = 9, DIVIDER_WIDTH = 4,
-        DIVIDER_HEIGHT = 2, DISABLED_TEXT = 0xFFA0A0A0, VANILLA_TEXT = 0xFF404040, WHEEL_DISC_ALPHA = 0xE6000000;
+        DIVIDER_HEIGHT = 2, LEGACY_CELLS = 16, DISABLED_TEXT = 0xFFA0A0A0, VANILLA_TEXT = 0xFF404040,
+        WHEEL_DISC_ALPHA = 0xE6000000;
     private static final float INACTIVE_ALPHA = 0.5F;
     public static final ThemeStyle STYLE = new ThemeStyle(
         ThemeStyle.DEFAULT.cornerLength(),
@@ -113,6 +119,20 @@ public class AE2Theme {
         String menuTheme = variant == null ? CONTEXT_MENU_ID : variant.menuId;
         for (String menu : menus) IThemeApi.get()
             .registerThemeForScreen(owner + ":" + screen + ":" + menu, menuTheme);
+    }
+
+    public static ResourceLocation legacyStates(@Nullable Variant variant) {
+        return variant == null ? AE2_LEGACY_STATES : variant.legacyStates;
+    }
+
+    public static ResourceLocation legacyTerminal(@Nullable Variant variant) {
+        return variant == null ? AE2_LEGACY_TERMINAL : variant.legacyTerminal;
+    }
+
+    public static void drawLegacyState(@Nullable Variant variant, int index, float x, float y, float size) {
+        float u = index % LEGACY_CELLS * ICON_SIZE / (float) SHEET,
+            v = index / LEGACY_CELLS * ICON_SIZE / (float) SHEET, span = ICON_SIZE / (float) SHEET;
+        GuiDraw.drawTexture(legacyStates(variant), x, y, x + size, y + size, u, v, u + span, v + span, true);
     }
 
     public static void sliderHandles(IWidget root, @Nullable String themeId) {
@@ -366,6 +386,7 @@ public class AE2Theme {
         public final Colors colors;
         public final ThemePalette palette;
         public final ThemeSkin skin;
+        public final ResourceLocation legacyStates, legacyTerminal;
         public final UITexture panel, inset, slotFluid, scroller, textField, iconButton, iconButtonHover, tabButton,
             tabButtonHover, switchOff, switchOffHover, switchOn, switchOnHover;
 
@@ -375,6 +396,8 @@ public class AE2Theme {
             this.folder = folder;
             this.colors = colors;
             palette = palette(colors);
+            legacyStates = texture(folder, "legacy_states");
+            legacyTerminal = texture(folder, "legacy_terminal");
             skin = ThemeSkin.NONE.with(Part.PANEL, skin(folder, "panel", PANEL_SIZE, PANEL_SIZE).border(2, 2, 2, 4))
                 .with(
                     Part.CARD,
@@ -556,6 +579,7 @@ public class AE2Theme {
     public enum Icon {
 
         COPY(192, 0, GuiTextures.COPY),
+        MORE(16, 0, GuiTextures.MORE),
         REFRESH(240, 0, GuiTextures.REFRESH),
         VISIBLE(16, 32, GuiTextures.VISIBLE),
         PLAY(48, 32, GuiTextures.PLAY),
