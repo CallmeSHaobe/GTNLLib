@@ -11,7 +11,6 @@ import com.gtnewhorizon.gtnhlib.util.data.IMod;
 import com.gtnewhorizon.gtnhmixins.builders.ITargetMod;
 import com.gtnewhorizon.gtnhmixins.builders.TargetModBuilder;
 
-import cpw.mods.fml.common.Loader;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 
@@ -62,7 +61,6 @@ public enum ModList implements IMod, ITargetMod {
     public final String displayName;
     public final boolean showInModList;
     private final TargetModBuilder targetBuilder;
-    private Boolean modLoaded;
 
     ModList(String ID, String displayName) {
         this(ID, displayName, null, true);
@@ -93,10 +91,11 @@ public enum ModList implements IMod, ITargetMod {
 
     @Override
     public boolean isModLoaded() {
-        if (this.modLoaded == null) {
-            this.modLoaded = Loader.isModLoaded(ID);
-        }
-        return this.modLoaded;
+        return ModUtils.isModLoaded(ID);
+    }
+
+    public Boolean getModLoaded() {
+        return isModLoaded();
     }
 
     public static List<ModList> loadedListedMods() {
