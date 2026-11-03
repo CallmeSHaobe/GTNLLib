@@ -58,3 +58,7 @@ gtnllib.command.item_info.nbt_entry=  %s : %s
 gtnllib.command.item_info.no_nbt_data=No NBT data.
 gtnllib.tooltip.press_shift=§rHold §6Shift §rfor more information
 gtnllib.tooltip.press_ctrl=§rHold §6Ctrl §rfor more information
+gtnllib.gui.number_entry.invalid=Not a valid number
+gtnllib.gui.number_entry.whole=Only whole numbers are allowed
+gtnllib.gui.number_entry.min=Minimum is %s
+gtnllib.gui.number_entry.max=Maximum is %s

@@ -58,3 +58,7 @@ gtnllib.command.item_info.nbt_entry=  %s：%s
 gtnllib.command.item_info.no_nbt_data=没有 NBT 数据。
 gtnllib.tooltip.press_shift=§r按住 §6Shift §r查看更多信息
 gtnllib.tooltip.press_ctrl=§r按住 §6Ctrl §r查看更多信息
+gtnllib.gui.number_entry.invalid=不是有效的数字
+gtnllib.gui.number_entry.whole=只能输入整数
+gtnllib.gui.number_entry.min=最小为 %s
+gtnllib.gui.number_entry.max=最大为 %s
