@@ -28,11 +28,11 @@ public class GTNLLibClient {
         GTNLLibConfig.register();
         connectConfig();
         HudOverlay.register();
+        BuiltinTextEffects.register();
+        AE2Theme.register();
         MinecraftForge.EVENT_BUS.register(new ShaderEffect.Reloader());
         MinecraftForge.EVENT_BUS.register(new PaletteThemes.Reloader());
-        AE2Theme.register();
         MinecraftForge.EVENT_BUS.register(new AE2Theme.Reloader());
-        BuiltinTextEffects.register();
         ((IReloadableResourceManager) Minecraft.getMinecraft()
             .getResourceManager()).registerReloadListener(EffectTextRenderer.INSTANCE);
         ClientCommandHandler.instance.registerCommand(new TextEffectPreviewCommand());
