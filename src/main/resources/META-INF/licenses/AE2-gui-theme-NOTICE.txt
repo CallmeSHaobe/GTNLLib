@@ -6,21 +6,33 @@ Local assets:
   assets/gtnllib/textures/gui/skin/ae2_light/button_highlighted.png
   assets/gtnllib/textures/gui/skin/ae2_light/button_disabled.png
   assets/gtnllib/textures/gui/skin/ae2_light/scroller.png
+  assets/gtnllib/textures/gui/skin/ae2_light/scroller_disabled.png
   assets/gtnllib/textures/gui/skin/ae2_light/text_field.png
   assets/gtnllib/textures/gui/skin/ae2_light/checkbox.png
   assets/gtnllib/textures/gui/skin/ae2_light/states.png
   assets/gtnllib/textures/gui/skin/ae2_light/inset.png
-  assets/gtnllib/textures/gui/skin/ae2_dark/ (the same nine files, recoloured)
+  assets/gtnllib/textures/gui/skin/ae2_light/big_scroller.png
+  assets/gtnllib/textures/gui/skin/ae2_light/big_scroller_disabled.png
+  assets/gtnllib/textures/gui/skin/ae2_light/button_bar.png
+  assets/gtnllib/textures/gui/skin/ae2_light/list_row.png
+  assets/gtnllib/textures/gui/skin/ae2_light/progress.png
+  assets/gtnllib/textures/gui/skin/ae2_dark/ (the same fifteen files, recoloured)
 Original assets:
   assets/ae2/textures/guis/background.png
   assets/ae2/textures/gui/sprites/button.png
   assets/ae2/textures/gui/sprites/button_highlighted.png
   assets/ae2/textures/gui/sprites/button_disabled.png
   assets/ae2/textures/gui/sprites/small_scroller.png
+  assets/ae2/textures/gui/sprites/small_scroller_disabled.png
+  assets/ae2/textures/gui/sprites/big_scroller.png
+  assets/ae2/textures/gui/sprites/big_scroller_disabled.png
+  assets/ae2/textures/gui/sprites/vertical_buttons_bg.png
   assets/ae2/textures/guis/text_field.png
   assets/ae2/textures/guis/checkbox.png
   assets/ae2/textures/guis/states.png
   assets/ae2/textures/guis/networkstatus.png (inset.png only)
+  assets/ae2/textures/guis/cpu_selector.png (list_row.png only)
+  assets/ae2/textures/guis/inscriber.png (progress.png only)
 Source project: Applied Energistics 2
 Project: https://github.com/AppliedEnergistics/Applied-Energistics-2
 Source revision: b124d1f695def88bd757a6a4bf9e145aaafe9ea7
@@ -28,13 +40,26 @@ Source assets:
   https://github.com/AppliedEnergistics/Applied-Energistics-2/tree/b124d1f695def88bd757a6a4bf9e145aaafe9ea7/src/main/resources/assets/ae2/textures
 Credit: (c) 2020 Ridanisaurus Rid, (c) 2013 - 2020 AlgorithmX2 et al.
 
-All files except inset.png are copied unchanged; only the resource paths and
-filenames are adapted for Minecraft 1.7.10. inset.png is an 8x9 crop of the
+All files except inset.png, list_row.png and progress.png are copied unchanged;
+only the resource paths and filenames are adapted for Minecraft 1.7.10
+(button_bar.png is vertical_buttons_bg.png). inset.png is an 8x9 crop of the
 list well in networkstatus.png (columns 8-11 and 166-169, rows 38-42 and
-114-117) so it can be drawn as a nine-slice.
-The files in skin/ae2_dark are adaptations: every pixel of the light file is
-recoloured with the light-to-dark colour pairs that Modernity-GTNH-Dark-UI uses
-for the same AE2 palette (see Modernity-GTNH-Dark-UI-gui-theme-NOTICE.txt).
+114-117) so it can be drawn as a nine-slice. list_row.png is the 67x44 CPU row
+sprite pair in cpu_selector.png (x 100-166, y 0-43). progress.png places the
+empty progress well of inscriber.png (x 135-140, y 39-56) next to its full bar
+(x 176-181, y 0-17).
+The files in skin/ae2_dark are adaptations using the light-to-dark AE2 palette
+of Modernity-GTNH-Dark-UI. The shared RGB mappings for nontransparent pixels are:
+  #413F54 -> #0A090E
+  #696D88 -> #14151D
+  #878FA5 -> #1D2029
+  #9A9FB4 -> #242631
+  #ADB0C4 -> #2D2F3C
+  #CBCCD4 -> #42434B
+  #F2F2F2 -> #8E8E8E
+The additional colour #4D4D67 becomes #0D0D13 in text_field.png and states.png,
+and #0D0D12 in list_row.png and progress.png. Other colours, including the
+selection blues and purple progress bar, and all alpha values are preserved.
 slider_track.png, slider_fill.png, slider_tag.png and divider.png in both skin
 folders are not AE2 files; they are small sprites drawn for GTNLLib in the AE2
 palette.
