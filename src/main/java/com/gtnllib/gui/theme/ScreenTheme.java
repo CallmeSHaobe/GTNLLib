@@ -2,12 +2,17 @@ package com.gtnllib.gui.theme;
 
 import org.jetbrains.annotations.Nullable;
 
+/** Selectable panel theme identifiers suitable for persisted GUI settings. */
 public enum ScreenTheme {
 
+    /** Uses the screen's default MUI2 theme. */
     DEFAULT(null),
+    /** Uses the light AE2 panel theme. */
     AE2_LIGHT(AE2Theme.LIGHT_ID),
+    /** Uses the dark AE2 panel theme. */
     AE2_DARK(AE2Theme.DARK_ID);
 
+    /** Registered theme identifier, or {@code null} when no theme override is requested. */
     public final @Nullable String themeId;
 
     ScreenTheme(@Nullable String themeId) {

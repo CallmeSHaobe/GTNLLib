@@ -1,3 +1,6 @@
+import java.io.File
+import org.gradle.external.javadoc.StandardJavadocDocletOptions
+
 plugins {
     id("com.gtnewhorizons.gtnhconvention")
 }
@@ -8,6 +11,16 @@ minecraft {
 
 tasks.withType<JavaCompile>().configureEach {
     options.annotationProcessorPath = configurations.annotationProcessor.get()
+}
+
+tasks.withType<Javadoc>().configureEach {
+    (options as StandardJavadocDocletOptions).apply {
+        encoding = "UTF-8"
+        docEncoding = "UTF-8"
+        charSet = "UTF-8"
+        // Resolve dependencies from bytecode instead of source files bundled in their JARs.
+        addStringOption("sourcepath", sourceSets.main.get().allJava.srcDirs.joinToString(File.pathSeparator))
+    }
 }
 
 sourceSets.test {
