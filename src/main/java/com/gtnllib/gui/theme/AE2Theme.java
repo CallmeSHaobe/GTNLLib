@@ -83,7 +83,7 @@ public class AE2Theme {
         SWITCH_LABEL_Y = 2, SCROLLBAR_WIDTH = 7, INSET_TOP = 3, INSET_EDGE = 1, BIG_SCROLLER_WIDTH = 12,
         SCROLLER_HEIGHT = 15, RADIO_SIZE = 14, RADIO_LABEL_X = 16, RADIO_LABEL_Y = 3, LIST_ROW_HEIGHT = 22,
         PROGRESS_WIDTH = 6, PROGRESS_HEIGHT = 18, BUTTON_BAR_MARGIN = 2, BUTTON_BAR_SPACING = 6, UPGRADE_PADDING = 5,
-        UPGRADE_ROWS = 8, VALIDATION_ICON_SIZE = 8;
+        UPGRADE_ROWS = 8, VALIDATION_ICON_SIZE = 8, PANEL_EDGE = 2, PANEL_BOTTOM_EDGE = 4;
     private static final String ROOT = "textures/gui/skin/";
     private static final ResourceLocation AE2_LEGACY_STATES = new ResourceLocation(
         "appliedenergistics2",
@@ -915,7 +915,11 @@ public class AE2Theme {
             palette = palette(colors);
             legacyStates = texture(folder, "legacy_states");
             legacyTerminal = texture(folder, "legacy_terminal");
-            skin = ThemeSkin.NONE.with(Part.PANEL, skin(folder, "panel", PANEL_SIZE, PANEL_SIZE).border(2, 2, 2, 4))
+            skin = ThemeSkin.NONE
+                .with(
+                    Part.PANEL,
+                    skin(folder, "panel", PANEL_SIZE, PANEL_SIZE)
+                        .border(PANEL_EDGE, PANEL_EDGE, PANEL_EDGE, PANEL_BOTTOM_EDGE))
                 .with(
                     Part.CARD,
                     skin(folder, "inset", INSET_WIDTH, INSET_HEIGHT)
@@ -925,7 +929,15 @@ public class AE2Theme {
                 .with(Part.SLIDER_FILL, skin(folder, "slider_fill", FILL_SIZE, FILL_SIZE).border(0, 1, 0, 0))
                 .with(Part.SLIDER_TAG, skin(folder, "slider_tag", TAG_WIDTH, TAG_HEIGHT).border(1, 2, 1, 2))
                 .with(Part.DIVIDER, skin(folder, "divider", DIVIDER_WIDTH, DIVIDER_HEIGHT));
-            panel = adaptable(folder, "panel", PANEL_SIZE, PANEL_SIZE, 2, 2, 2, 4);
+            panel = adaptable(
+                folder,
+                "panel",
+                PANEL_SIZE,
+                PANEL_SIZE,
+                PANEL_EDGE,
+                PANEL_EDGE,
+                PANEL_EDGE,
+                PANEL_BOTTOM_EDGE);
             inset = adaptable(
                 folder,
                 "inset",
@@ -1072,24 +1084,23 @@ public class AE2Theme {
         }
 
         private ThemeBuilder<?> menu() {
-            IDrawable row = new Rectangle().color(HIGHLIGHT);
             return new ThemeBuilder<>(menuId).parent(id)
                 .background(IThemeApi.PANEL, panel)
                 .background(IThemeApi.BUTTON, FLAT_OPTION)
-                .hoverBackground(IThemeApi.BUTTON, row)
+                .hoverBackground(IThemeApi.BUTTON, listRowSelected)
                 .textColor(IThemeApi.BUTTON, colors.text)
                 .textHoverColor(IThemeApi.BUTTON, colors.hoverText)
                 .widgetTheme(
                     IThemeApi.TOGGLE_BUTTON,
                     new SelectableTheme.Builder<>().background(FLAT_OPTION)
                         .textColor(colors.text)
-                        .selectedBackground(row)
+                        .selectedBackground(listRowSelected)
                         .selectedTextColor(colors.hoverText))
                 .widgetThemeHover(
                     IThemeApi.TOGGLE_BUTTON,
-                    new SelectableTheme.Builder<>().background(row)
+                    new SelectableTheme.Builder<>().background(listRowSelected)
                         .textColor(colors.hoverText)
-                        .selectedBackground(row)
+                        .selectedBackground(listRowSelected)
                         .selectedTextColor(colors.hoverText));
         }
 
