@@ -129,11 +129,13 @@ public class HandleScrollData extends VerticalScrollData implements IPersistentS
         int range = getScrollSize() - visible;
         if (range <= 0) return 0;
         int length = getScrollBarLength(area), travel = visible - length, track = mainAxisPos - trackTop(area);
+        int handle = track - clickOffset;
         long offset;
+        // A stationary press keeps its exact offset; a moved thumb at either end uses the track endpoint.
         if (travel <= 0) offset = getScroll();
-        else if (isDragging()) offset = Math
+        else if (isDragging() && (track == dragMouse || handle > 0 && handle < travel)) offset = Math
             .max(0, Math.min(range, Math.round(dragScroll + (double) (track - dragMouse) * range / travel)));
-        else offset = offsetAt(track - clickOffset, visible, length);
+        else offset = offsetAt(handle, visible, length);
         // ScrollArea.drag multiplies by the range plus the track thickness and truncates; the half pixel survives both.
         return (float) ((offset + 0.5D) / ((double) range + getThickness()));
     }
