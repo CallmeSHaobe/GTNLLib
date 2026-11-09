@@ -100,6 +100,9 @@ public class AE2Theme {
         VANILLA_TRACK_SHADOW = 0xFF373737, VANILLA_TRACK_LIGHT = 0xFFFFFFFF;
     private static final UITexture VANILLA_SCROLLER = vanillaScroller(VANILLA_SCROLLER_U),
         VANILLA_SCROLLER_DISABLED = vanillaScroller(VANILLA_SCROLLER_DISABLED_U);
+    // IDrawable.EMPTY is saved as JSON null, which the theme loader reads as unset and replaces with the parent
+    // theme's framed button; a transparent rectangle keeps menu options flat.
+    private static final IDrawable FLAT_OPTION = new Rectangle().color(0);
     private static final float INACTIVE_ALPHA = 0.5F;
     /** Shared sizing and spacing used by both AE2 variants. */
     public static final ThemeStyle STYLE = new ThemeStyle(
@@ -1072,13 +1075,13 @@ public class AE2Theme {
             IDrawable row = new Rectangle().color(HIGHLIGHT);
             return new ThemeBuilder<>(menuId).parent(id)
                 .background(IThemeApi.PANEL, panel)
-                .background(IThemeApi.BUTTON, IDrawable.EMPTY)
+                .background(IThemeApi.BUTTON, FLAT_OPTION)
                 .hoverBackground(IThemeApi.BUTTON, row)
                 .textColor(IThemeApi.BUTTON, colors.text)
                 .textHoverColor(IThemeApi.BUTTON, colors.hoverText)
                 .widgetTheme(
                     IThemeApi.TOGGLE_BUTTON,
-                    new SelectableTheme.Builder<>().background(IDrawable.EMPTY)
+                    new SelectableTheme.Builder<>().background(FLAT_OPTION)
                         .textColor(colors.text)
                         .selectedBackground(row)
                         .selectedTextColor(colors.hoverText))
