@@ -39,7 +39,7 @@ ListWidget<IWidget, ?> list = new GTNLListWidget<>().scrollDirection(scrolling)
     .size(180, 110);
 ```
 
-`GTNLListWidget` reserves the scroll-bar width and draws its disabled handle when the content fits. Row snapping includes both scroll endpoints. See `HandleScrollData.rows(int)` for layout alignment requirements.
+`GTNLListWidget` reserves the scroll-bar width and draws its disabled handle when the content fits. Row snapping includes both scroll endpoints. See `HandleScrollData.rows(int)` for layout alignment requirements. Dragging the handle is anchored to the offset at the press, so holding the handle still never moves long lists.
 
 ### Integer Input
 

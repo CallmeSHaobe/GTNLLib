@@ -30,6 +30,7 @@ public class HandleScrollData extends VerticalScrollData implements IPersistentS
     private final @Nullable Variant variant;
     private final boolean small;
     private int rowHeight;
+    private int dragMouse, dragScroll;
 
     /**
      * Creates scroll data with a large handle.
@@ -87,13 +88,35 @@ public class HandleScrollData extends VerticalScrollData implements IPersistentS
         return (int) ((long) (fullVisibleSize - scrollBarLength) * getScroll() / (getScrollSize() - fullVisibleSize));
     }
 
+    /**
+     * Starts a drag when the press lands on an active track.
+     * <p>
+     * The drag is anchored to the scroll offset at the press. A press on the handle keeps that offset; a press
+     * elsewhere on the track targets the offset that centres the handle on the pointer.
+     *
+     * @param area         owning scroll area
+     * @param mainAxisPos  mouse Y coordinate relative to the scroll area
+     * @param crossAxisPos mouse X coordinate relative to the scroll area
+     * @param button       mouse button
+     * @return whether a drag started
+     */
     @Override
     public boolean onMouseClicked(ScrollArea area, int mainAxisPos, int crossAxisPos, int button) {
-        return super.onMouseClicked(area, mainAxisPos - trackTop(area), crossAxisPos, button);
+        int track = mainAxisPos - trackTop(area);
+        if (!isScrollBarActive(area) || !super.onMouseClicked(area, track, crossAxisPos, button)) return false;
+        int length = getScrollBarLength(area), visible = getFullVisibleSize(area);
+        int start = getScrollBarStart(area, length, visible);
+        dragMouse = track;
+        dragScroll = track < start || track > start + length ? offsetAt(track - clickOffset, visible, length)
+            : getScroll();
+        return true;
     }
 
     /**
-     * Converts a handle position to the progress consumed by {@link ScrollArea#drag(int, int)}.
+     * Converts the pointer position to the progress consumed by {@link ScrollArea#drag(int, int)}.
+     * <p>
+     * During a drag, the pointer's movement since the press is added to the offset recorded at the press, so a
+     * pointer that has not moved keeps the content in place regardless of the content length.
      *
      * @param area         owning scroll area
      * @param mainAxisPos  mouse Y coordinate relative to the scroll area
@@ -105,13 +128,22 @@ public class HandleScrollData extends VerticalScrollData implements IPersistentS
         int visible = getFullVisibleSize(area);
         int range = getScrollSize() - visible;
         if (range <= 0) return 0;
-        int travel = visible - getScrollBarLength(area);
-        if (travel <= 0) return getScroll() / (float) (range + getThickness());
-        int position = mainAxisPos - trackTop(area) - clickOffset;
-        if (position <= 0) return 0;
-        if (position >= travel) return 1;
-        // ScrollArea.drag includes the track thickness in its content range.
-        return position / (float) travel * range / (range + getThickness());
+        int length = getScrollBarLength(area), travel = visible - length, track = mainAxisPos - trackTop(area);
+        int handle = track - clickOffset;
+        long offset;
+        // A stationary press keeps its exact offset; a moved thumb at either end uses the track endpoint.
+        if (travel <= 0) offset = getScroll();
+        else if (isDragging() && (track == dragMouse || handle > 0 && handle < travel)) offset = Math
+            .max(0, Math.min(range, Math.round(dragScroll + (double) (track - dragMouse) * range / travel)));
+        else offset = offsetAt(handle, visible, length);
+        // ScrollArea.drag multiplies by the range plus the track thickness and truncates; the half pixel survives both.
+        return (float) ((offset + 0.5D) / ((double) range + getThickness()));
+    }
+
+    private int offsetAt(int handle, int visible, int length) {
+        int range = getScrollSize() - visible, travel = visible - length;
+        if (travel <= 0) return getScroll();
+        return (int) Math.max(0, Math.min(range, Math.round((double) handle * range / travel)));
     }
 
     @Override
