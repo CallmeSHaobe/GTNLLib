@@ -10,7 +10,9 @@ public enum ScreenTheme {
     /** Uses the light AE2 panel theme. */
     AE2_LIGHT(AE2Theme.LIGHT_ID),
     /** Uses the dark AE2 panel theme. */
-    AE2_DARK(AE2Theme.DARK_ID);
+    AE2_DARK(AE2Theme.DARK_ID),
+    /** Uses the dark AE2 panel theme with purple selection highlights. */
+    AE2_DARK_PURPLE(AE2Theme.DARK_PURPLE_ID);
 
     /** Registered theme identifier, or {@code null} when no theme override is requested. */
     public final @Nullable String themeId;
