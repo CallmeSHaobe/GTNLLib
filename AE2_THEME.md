@@ -1,13 +1,13 @@
 # AE2 Theme API
 
-GTNLLib provides light and dark AE2 themes for ModularUI 2. Rendering helpers and themed widgets are client-side APIs. Their source Javadoc defines parameter units, return values, null handling and lifecycle requirements.
+GTNLLib provides light, dark and purple-highlighted dark AE2 themes for ModularUI 2. Rendering helpers and themed widgets are client-side APIs. Their source Javadoc defines parameter units, return values, null handling and lifecycle requirements.
 
 ## API Reference
 
 | Type | Responsibility |
 | --- | --- |
 | [AE2Theme](src/main/java/com/gtnllib/gui/theme/AE2Theme.java) | Theme registration, variant lookup, drawable factories and direct drawing helpers. Includes the `Variant`, `Colors`, `ButtonText` and `Icon` types. |
-| [ScreenTheme](src/main/java/com/gtnllib/gui/theme/ScreenTheme.java) | Persistable selection of the default, light or dark panel theme. |
+| [ScreenTheme](src/main/java/com/gtnllib/gui/theme/ScreenTheme.java) | Persistable selection of the default, light, dark or purple dark panel theme. |
 | [HandleScrollData](src/main/java/com/gtnllib/gui/widget/HandleScrollData.java) | Vertical scrolling with a fixed-size handle and optional row snapping. |
 | [GTNLListWidget](src/main/java/com/gtnllib/gui/widget/GTNLListWidget.java) | List layout, initial scroll position and persistent scroll-bar integration. |
 | [IPersistentScrollbar](src/main/java/com/gtnllib/gui/widget/IPersistentScrollbar.java) | Extension contract for scroll data that retains an inactive track. |
@@ -20,8 +20,13 @@ GTNLLib provides light and dark AE2 themes for ModularUI 2. Rendering helpers an
 | `ScreenTheme.DEFAULT` | Screen default (`themeId == null`) | `modularui.context_menu` |
 | `ScreenTheme.AE2_LIGHT` | `gtnllib:ae2_light` | `gtnllib:ae2_light_menu` |
 | `ScreenTheme.AE2_DARK` | `gtnllib:ae2_dark` | `gtnllib:ae2_dark_menu` |
+| `ScreenTheme.AE2_DARK_PURPLE` | `gtnllib:ae2_dark_purple` | `gtnllib:ae2_dark_purple_menu` |
 
 GTNLLib registers these themes during client initialization. Apply the selected identifier through MUI2's screen theme registration. `AE2Theme.useMenuTheme` maps named child menu panels to the matching menu theme.
+
+The purple dark theme shares the dark palette and replaces AE2's light-blue selection with fluix purple. Custom selection drawing should read `Variant.highlight`, `highlightTop`, `highlightShadow` and `highlightText` instead of the `AE2Theme.HIGHLIGHT` constants, so it matches every variant.
+
+![AE2 dark and purple dark themes](.github/images/ae2-dark-purple-preview.png)
 
 ## Usage Examples
 
@@ -39,7 +44,7 @@ ListWidget<IWidget, ?> list = new GTNLListWidget<>().scrollDirection(scrolling)
     .size(180, 110);
 ```
 
-`GTNLListWidget` reserves the scroll-bar width and draws its disabled handle when the content fits. Row snapping includes both scroll endpoints. See `HandleScrollData.rows(int)` for layout alignment requirements.
+`GTNLListWidget` reserves the scroll-bar width and draws its disabled handle when the content fits. Row snapping includes both scroll endpoints. See `HandleScrollData.rows(int)` for layout alignment requirements. Dragging the handle is anchored to the offset at the press, so holding the handle still never moves long lists.
 
 ### Integer Input
 

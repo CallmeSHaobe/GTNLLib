@@ -70,10 +70,18 @@ public class AE2Theme {
     public static final String DARK_ID = "gtnllib:ae2_dark";
     /** Dark context-menu theme identifier. */
     public static final String DARK_MENU_ID = "gtnllib:ae2_dark_menu";
+    /** Dark panel theme identifier with purple selection highlights. */
+    public static final String DARK_PURPLE_ID = "gtnllib:ae2_dark_purple";
+    /** Dark context-menu theme identifier with purple selection highlights. */
+    public static final String DARK_PURPLE_MENU_ID = "gtnllib:ae2_dark_purple_menu";
     /** MUI2 context-menu theme used outside AE2 panels. */
     public static final String CONTEXT_MENU_ID = "modularui.context_menu";
-    /** ARGB selection colors shared by the light and dark variants. */
-    public static final int HIGHLIGHT = 0xFF9CD3FF, HIGHLIGHT_SHADOW = 0xFF708CBA, FIELD_SELECTION = 0xFF0000FF;
+    /** ARGB light-blue selection fill, top edge and shadow of the light and dark variants. */
+    public static final int HIGHLIGHT = 0xFF9CD3FF, HIGHLIGHT_TOP = 0xFFDAFFFF, HIGHLIGHT_SHADOW = 0xFF708CBA,
+        FIELD_SELECTION = 0xFF0000FF;
+    /** ARGB fluix-purple selection fill, top edge and shadow of the purple dark variant. */
+    public static final int PURPLE_HIGHLIGHT = 0xFF644595, PURPLE_HIGHLIGHT_TOP = 0xFFE2A3E3,
+        PURPLE_HIGHLIGHT_SHADOW = 0xFF212040;
     /**
      * Widget dimensions, label offsets, border widths and layout spacing in GUI pixels; {@code UPGRADE_ROWS} is a
      * count.
@@ -719,6 +727,29 @@ public class AE2Theme {
             .build();
     }
 
+    private static Colors darkColors(int hoverText) {
+        return new Colors(
+            0xFFAAAAAA,
+            0xFF7E808E,
+            0xFF9496A4,
+            0xFFE0E0E0,
+            hoverText,
+            0xFF5E6070,
+            0xFFE0E0E0,
+            0xFF6B6E7E,
+            0xFF14151D,
+            0xFF8E8E8E,
+            0xFF42434B,
+            0xFF242631,
+            0xFF0A090E,
+            0xFF2D2F3C,
+            0xFF5FCB79,
+            0xFFE06A60,
+            0xFF6CB4F0,
+            0xFFE0A54A,
+            0xFFFF5A3C);
+    }
+
     private static UITexture frame(String folder, String name, int x, int y) {
         return UITexture.builder()
             .location(texture(folder, "states"))
@@ -810,8 +841,8 @@ public class AE2Theme {
      * AE2 panel and menu variants with their palettes and textures.
      * <p>
      * Colors and resource names are shared by the registered themes and direct drawing helpers. Raw textures do
-     * not select a variant from the drawing context. Selection highlights use {@link AE2Theme#HIGHLIGHT} in both
-     * variants.
+     * not select a variant from the drawing context. Each variant's selection colors match the selected sprites of
+     * its skin.
      */
     public enum Variant {
 
@@ -836,29 +867,13 @@ public class AE2Theme {
                 0xFF8F2B23,
                 0xFF144673,
                 0xFF7A4A00,
-                0xFFCE2401)),
+                0xFFCE2401),
+            HIGHLIGHT, HIGHLIGHT_TOP, HIGHLIGHT_SHADOW),
         /** Dark AE2 palette. */
-        DARK(DARK_ID, DARK_MENU_ID, "ae2_dark",
-            new Colors(
-                0xFFAAAAAA,
-                0xFF7E808E,
-                0xFF9496A4,
-                0xFFE0E0E0,
-                0xFF517497,
-                0xFF5E6070,
-                0xFFE0E0E0,
-                0xFF6B6E7E,
-                0xFF14151D,
-                0xFF8E8E8E,
-                0xFF42434B,
-                0xFF242631,
-                0xFF0A090E,
-                0xFF2D2F3C,
-                0xFF5FCB79,
-                0xFFE06A60,
-                0xFF6CB4F0,
-                0xFFE0A54A,
-                0xFFFF5A3C));
+        DARK(DARK_ID, DARK_MENU_ID, "ae2_dark", darkColors(0xFF517497), HIGHLIGHT, HIGHLIGHT_TOP, HIGHLIGHT_SHADOW),
+        /** Dark AE2 palette with fluix-purple selection highlights. */
+        DARK_PURPLE(DARK_PURPLE_ID, DARK_PURPLE_MENU_ID, "ae2_dark_purple", darkColors(0xFFFFFFFF), PURPLE_HIGHLIGHT,
+            PURPLE_HIGHLIGHT_TOP, PURPLE_HIGHLIGHT_SHADOW, 0xFFFFFFFF);
 
         /** Registered panel theme identifier. */
         public final String id;
@@ -868,6 +883,10 @@ public class AE2Theme {
         public final String folder;
         /** Semantic ARGB colors. */
         public final Colors colors;
+        /** ARGB selection fill, top edge and bottom shadow matching this skin's selected sprites. */
+        public final int highlight, highlightTop, highlightShadow;
+        /** ARGB text color drawn on the selection fill, such as slider value tags. */
+        public final int highlightText;
         /** Palette used by GTNLLib's general theme helpers. */
         public final ThemePalette palette;
         /** Skin used by GTNLLib's general theme helpers. */
@@ -907,12 +926,22 @@ public class AE2Theme {
         /** Validation warning sprite, drawn at {@link AE2Theme#VALIDATION_ICON_SIZE} in number entries. */
         public final UITexture invalid;
 
-        Variant(String id, String menuId, String folder, Colors colors) {
+        Variant(String id, String menuId, String folder, Colors colors, int highlight, int highlightTop,
+            int highlightShadow) {
+            this(id, menuId, folder, colors, highlight, highlightTop, highlightShadow, colors.outline);
+        }
+
+        Variant(String id, String menuId, String folder, Colors colors, int highlight, int highlightTop,
+            int highlightShadow, int highlightText) {
             this.id = id;
             this.menuId = menuId;
             this.folder = folder;
             this.colors = colors;
-            palette = palette(colors);
+            this.highlight = highlight;
+            this.highlightTop = highlightTop;
+            this.highlightShadow = highlightShadow;
+            this.highlightText = highlightText;
+            palette = palette(colors, highlight, highlightShadow, highlightText);
             legacyStates = texture(folder, "legacy_states");
             legacyTerminal = texture(folder, "legacy_terminal");
             skin = ThemeSkin.NONE
@@ -1039,7 +1068,7 @@ public class AE2Theme {
                 .lineColor(colors.line)
                 .textColor(colors.text)
                 .textShadow(false)
-                .highlightColor(HIGHLIGHT);
+                .highlightColor(highlight);
         }
 
         private static UITexture checkbox(String folder, String name, int x, int y) {
@@ -1052,10 +1081,10 @@ public class AE2Theme {
                 .build();
         }
 
-        private static ThemePalette palette(Colors colors) {
+        private static ThemePalette palette(Colors colors, int highlight, int highlightShadow, int highlightText) {
             return new ThemePalette(
-                HIGHLIGHT,
-                HIGHLIGHT_SHADOW,
+                highlight,
+                highlightShadow,
                 0x40FFFFFF,
                 colors.text,
                 colors.muted,
@@ -1064,8 +1093,8 @@ public class AE2Theme {
                 colors.well,
                 colors.edge,
                 colors.well,
-                HIGHLIGHT,
-                0x80000000 | HIGHLIGHT & 0xFFFFFF,
+                highlight,
+                0x80000000 | highlight & 0xFFFFFF,
                 colors.well,
                 colors.edge,
                 0x80FFFFFF,
@@ -1077,7 +1106,7 @@ public class AE2Theme {
                 colors.muted,
                 colors.secondary,
                 colors.hoverText,
-                colors.outline,
+                highlightText,
                 0x40000000 | colors.text & 0xFFFFFF,
                 0x99000000 | colors.text & 0xFFFFFF,
                 colors.error);
